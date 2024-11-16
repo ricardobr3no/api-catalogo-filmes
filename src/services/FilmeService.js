@@ -9,12 +9,12 @@ export default class FilmeService extends Service {
 
   async adicionarNovoFilme(DTO) {
     const { generoId, ...data } = DTO;
-    const filme = await db.Filme.create(data);
+    const filme = await db.Filme.upsert(data);
 
     if (!filme) {
       throw new Error("Filme nao econtrado");
     }
-    await filme.addGeneros(generoId);
+    // await filme.addGeneros(generoId);
   }
 
   async pegaTodosOsFilmes(queryObject) {
@@ -23,6 +23,7 @@ export default class FilmeService extends Service {
         attributes: [
           "id",
           "titulo",
+          "ano",
           "sinopse",
           "genero",
           "duracao",
@@ -42,15 +43,34 @@ export default class FilmeService extends Service {
       });
 
     } else {
+
       return db.Filme.findAll({
         where: {
           titulo: {
-            [Op.substring]: queryObject.titulo // pegar os filmes cujop titulo incluam o parametro
+            [Op.substring]: queryObject.titulo, // pegar os filmes cujop titulo incluam o parametro
+          },
+
+          ano:
+            (function() {
+              if (queryObject.ano) {
+                return {
+                  [Op.eq]: queryObject.ano
+                }
+              }
+              return {
+                [Op.lte]: new Date().getFullYear() // retorna todos <= current year
+              }
+            })(),
+
+          genero: {
+            [Op.substring]: queryObject.genero
           }
         },
+
         attributes: [
           "id",
           "titulo",
+          "ano",
           "sinopse",
           "genero",
           "duracao",
