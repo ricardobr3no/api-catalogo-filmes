@@ -3,9 +3,10 @@ import Controller from "./Controller.js";
 
 import { fileURLToPath } from "url";
 import path from "path";
+import { upload } from "../config/multerConfig.js";
+
 
 const __dirname = fileURLToPath(import.meta.url);
-
 const imageService = new ImageService();
 
 export default class ImageController extends Controller {
@@ -22,18 +23,6 @@ export default class ImageController extends Controller {
   }
 
   async adicionaCapa(req, res) {
-    const currFile = req.files.capa;
-    const newFilename = req.params.imageId;
-    const folderPath = path.resolve(__dirname, "../../..");
-
-    let uploadPath =
-      folderPath + "/thumbnails/" + newFilename + "_" + Date.now() + ".jpg";
-
-    await currFile.mv(uploadPath, function (err) {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      res.send("file upload");
-    });
+    res.status(201).send({ message: `tudo enviado!` });
   }
 }

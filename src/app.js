@@ -1,8 +1,8 @@
 import sequelize from "./config/dbConfig.js";
 import express from "express";
 import routes from "./routes/index.js";
-import fileUpload from "express-fileupload";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 await sequelize.sync();
 
@@ -14,7 +14,7 @@ try {
 }
 
 const app = express();
-app.use(express.json(), fileUpload(), cors());
+app.use(express.json(), cors());
 routes(app);
 
 export default app;
