@@ -13,7 +13,7 @@ export default class ImageController extends Controller {
   async pegaImagePorId(req, res) {
     const titulo = req.params.imageId;
 
-    // ler diretorio e exibir imagem encontrada
+    // ler diretorio e exibir imagem encontrada, exibir noImage caso contrario
     fs.readdir("./src/thumbnails/", async (err, arquivos) => {
       if (err) throw err;
       const arquivoEncontrado = arquivos.filter(arq => arq.includes(titulo))[0]
@@ -22,7 +22,7 @@ export default class ImageController extends Controller {
       if (arquivoEncontrado && arquivoEncontrado.split("_")[0] === titulo) {
         return res.status(200).sendFile(dirPath + "/" + arquivoEncontrado);
       } else {
-        return res.status(404).send("Not Found")
+        return res.status(404).sendFile(dirPath + "/noImage.jpg");
       }
     });
   }
