@@ -14,7 +14,9 @@ try {
 }
 
 const app = express();
+app.set('view engine', 'ejs');
 app.use(express.json(), cors());
+
 routes(app);
 
 export default app;
