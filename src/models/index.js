@@ -5,12 +5,13 @@ import GeneroFilme from "./GeneroFilme.js";
 import Image from "./Image.js";
 
 // --- associations ---
+// 1:m
 Filme.belongsTo(Diretor);
 Diretor.hasMany(Filme);
-
+// 1:m
 Filme.hasMany(Image);
 Image.belongsTo(Filme);
-
+// m:n
 Filme.belongsToMany(Genero, {
   through: GeneroFilme,
   foreignKey: "filmeId",
@@ -25,11 +26,10 @@ Genero.belongsToMany(Filme, {
 });
 // -----------------
 
-const db = {
-  Genero,
+export const db = {
   Filme,
+  Genero,
   Diretor,
-  Image,
-};
+}
 
 export default db;

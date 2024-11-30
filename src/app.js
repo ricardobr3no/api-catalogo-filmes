@@ -2,12 +2,12 @@ import sequelize from "./config/dbConfig.js";
 import express from "express";
 import routes from "./routes/index.js";
 import cors from "cors";
-import bodyParser from "body-parser";
 
-await sequelize.sync();
+await sequelize.sync(/* { alter: true } */);
 
 try {
   await sequelize.authenticate();
+  // console.clear();
   console.log("\nConexao estabelecida com sucesso!");
 } catch (error) {
   console.error("Nao foi possivel conectar ao banco de dados : ", error);

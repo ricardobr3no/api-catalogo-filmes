@@ -12,6 +12,7 @@ const Diretor = sequelize.define(
     nome: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
   },
   { timestamps: false, tableName: "diretor", freezeTableName: true },

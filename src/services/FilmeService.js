@@ -9,12 +9,12 @@ export default class FilmeService extends Service {
 
   async adicionarNovoFilme(DTO) {
     const { generoId, ...data } = DTO;
-    const filme = await db.Filme.upsert(data);
+    const filme = await db.Filme.create(data);
 
     if (!filme) {
       throw new Error("Filme nao econtrado");
     }
-    // await filme.addGeneros(generoId);
+    await filme.addGeneros(generoId);
   }
 
   async pegaTodosOsFilmes(queryObject) {
@@ -25,10 +25,12 @@ export default class FilmeService extends Service {
           "titulo",
           "ano",
           "sinopse",
-          "genero",
-          "duracao",
+          "classificacao",
+          `createdAt`, `updatedAt`
+          // "genero",
+          // "duracao",
         ],
-        include: [
+        include: [ // incluir informaçoes das tabelas relacionadas
           {
             model: db.Genero,
             as: "generos",
@@ -46,25 +48,20 @@ export default class FilmeService extends Service {
 
       return db.Filme.findAll({
         where: {
-          titulo: {
-            [Op.substring]: queryObject.titulo, // pegar os filmes cujop titulo incluam o parametro
-          },
+          titulo: (function() {
+            if (queryObject.titulo)
+              return { [Op.substring]: queryObject.titulo }
+            return { [Op.substring]: "" }
+          })(),
 
-          ano:
-            (function() {
-              if (queryObject.ano) {
-                return {
-                  [Op.eq]: queryObject.ano
-                }
-              }
-              return {
-                [Op.lte]: new Date().getFullYear() // retorna todos <= current year
-              }
-            })(),
-
-          genero: {
-            [Op.substring]: queryObject.genero
-          }
+          ano: (function() {
+            if (queryObject.ano)
+              return { [Op.eq]: queryObject.ano }
+            return { [Op.lte]: new Date().getFullYear() } // retorna todos <= current year
+          })(),
+          // generos: {
+          //   [Op.substring]: queryObject.genero
+          // }
         },
 
         attributes: [
@@ -72,10 +69,13 @@ export default class FilmeService extends Service {
           "titulo",
           "ano",
           "sinopse",
-          "genero",
-          "duracao",
+          "classificacao",
+          `createdAt`, `updatedAt`
+          // "genero",
+          // "duracao",
         ],
-        include: [
+        include: [ // incluir informaçoes das tabelas relacionadas
+
           {
             model: db.Genero,
             as: "generos",

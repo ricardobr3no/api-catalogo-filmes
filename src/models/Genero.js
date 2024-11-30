@@ -4,8 +4,16 @@ import sequelize from "../config/dbConfig.js";
 const Genero = sequelize.define(
   "genero",
   {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    nome: { type: DataTypes.STRING, allowNull: false },
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    nome: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     // descricao: { type: DataTypes.STRING },
   },
   { tableName: "generos", timestamps: false, freezeTableName: true },

@@ -43,7 +43,7 @@ export default class Controller {
   async deletaPorId(req, res) {
     try {
       await this.service.deletaRegistroPorId(req.params.id);
-      res.status(200).json({ message: "item deletado" });
+      await res.status(200).json({ message: "item deletado" });
     } catch (error) {
       console.log(`nao foi possivel deletar item: ${error}`);
     }

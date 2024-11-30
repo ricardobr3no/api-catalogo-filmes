@@ -18,15 +18,22 @@ const Filme = sequelize.define(
       type: DataTypes.TEXT,
       defaultValue: "sinopse do filme",
     },
-    genero: {
-      type: DataTypes.STRING,
-    },
-    duracao: {
-      type: DataTypes.INTEGER,
-    },
+    // genero: {
+    //   type: DataTypes.STRING,
+    // },
+    // duracao: {
+    //   type: DataTypes.INTEGER,
+    // },
     ano: {
       type: DataTypes.INTEGER,
       defaultValue: 2020,
+    },
+    classificacao: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        isIn: [["L", "10", "12", "14", "16", "18"]]
+      }
     },
     diretorId: {
       type: DataTypes.INTEGER,
@@ -36,7 +43,7 @@ const Filme = sequelize.define(
       },
     },
   },
-  { timestamps: false, tableName: "filmes", freezeTableName: true },
+  { timestamps: true, tableName: "filmes", freezeTableName: true },
 );
 
 export default Filme;
