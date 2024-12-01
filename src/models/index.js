@@ -17,12 +17,14 @@ Filme.belongsToMany(Genero, {
   foreignKey: "filmeId",
   otherKey: "generoId",
   as: "generos", // alias para include
+  onDelete: "Cascade"
 });
 Genero.belongsToMany(Filme, {
   through: GeneroFilme,
   foreignKey: "generoId",
   otherKey: "filmeId",
   as: "filmes", // alias para include
+  onDelete: "Cascade"
 });
 // -----------------
 

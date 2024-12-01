@@ -7,8 +7,8 @@ const routes = Router();
 routes.get("/filmes", (req, res) => filmeController.pegaTodosOsFilmes(req, res));
 routes.post("/filmes", (req, res) => filmeController.adicionaFilme(req, res));
 routes.get("/filmes/:id", (req, res) => filmeController.pegaOneFilmePorId(req, res));
-routes.put("filmes/:id", (req, res) => filmeController.atualizaPorId(req, res));
-routes.delete("filmes/:id", (req, res) =>
+routes.put("/filmes/:id", (req, res) => filmeController.atualizaPorId(req, res));
+routes.delete("/filmes/:id", (req, res) =>
   filmeController.deletaPorId(req, res),
 );
 

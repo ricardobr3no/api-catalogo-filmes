@@ -43,9 +43,9 @@ export default class Controller {
   async deletaPorId(req, res) {
     try {
       await this.service.deletaRegistroPorId(req.params.id);
-      await res.status(200).json({ message: "item deletado" });
+      return res.status(200).json({ message: "item deletado" });
     } catch (error) {
-      console.log(`nao foi possivel deletar item: ${error}`);
+      return res.status(400).json({ message: "erro ao deletar item", erro: error })
     }
   }
 }

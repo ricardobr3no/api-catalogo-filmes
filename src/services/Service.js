@@ -14,13 +14,14 @@ export default class Service {
     return db[this.model].create(DTO);
   }
   async atualizaRegistroPorId(id, DTO) {
-    db[this.model].update(DTO, {
+    await db[this.model].update(DTO, {
       where: { id },
     });
     return registro.save();
   }
   async deletaRegistroPorId(id) {
-    const registro = this.pegaRegistroPorId(id);
-    return registro.destroy();
+    return db[this.model].destroy({
+      where: { id },
+    });
   }
 }

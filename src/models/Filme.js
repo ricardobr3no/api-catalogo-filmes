@@ -18,12 +18,6 @@ const Filme = sequelize.define(
       type: DataTypes.TEXT,
       defaultValue: "sinopse do filme",
     },
-    // genero: {
-    //   type: DataTypes.STRING,
-    // },
-    // duracao: {
-    //   type: DataTypes.INTEGER,
-    // },
     ano: {
       type: DataTypes.INTEGER,
       defaultValue: 2020,

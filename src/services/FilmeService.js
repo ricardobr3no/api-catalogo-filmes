@@ -18,6 +18,7 @@ export default class FilmeService extends Service {
     await filme.addGeneros(generoId);
   }
 
+
   async pegaOneFilmePorId(id) {
 
     return db.Filme.findByPk(id, {
@@ -27,7 +28,7 @@ export default class FilmeService extends Service {
         "ano",
         "sinopse",
         "classificacao",
-        `createdAt`, `updatedAt`
+        // `createdAt`, `updatedAt`
         // "genero",
         // "duracao",
       ],
@@ -55,7 +56,8 @@ export default class FilmeService extends Service {
           "ano",
           "sinopse",
           "classificacao",
-          `createdAt`, `updatedAt`
+          // `createdAt`,
+          // `updatedAt`
           // "genero",
           // "duracao",
         ],
@@ -96,7 +98,7 @@ export default class FilmeService extends Service {
           "ano",
           "sinopse",
           "classificacao",
-          `createdAt`, `updatedAt`
+          // `createdAt`, `updatedAt`,
           // "genero",
           // "duracao",
         ],

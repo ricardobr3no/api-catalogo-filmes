@@ -35,9 +35,9 @@ export default class FilmeController extends Controller {
   async adicionaFilme(req, res) {
     try {
       await filmeService.adicionarNovoFilme(req.body);
-      await res.status(201).json({ message: "filme cadastrado" });
+      return res.status(201).json({ message: "filme cadastrado" });
     } catch (error) {
-      console.error(`nao foi possivel adicionar item: ${error}`);
+      return res.status(500).json({ message: "erro ao adicionar filme", erro: error });
     }
   }
 
