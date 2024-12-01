@@ -1,6 +1,7 @@
 import Service from "./Service.js";
 import db from "../models/index.js";
 import { Op } from "sequelize";
+import sequelize from "../config/dbConfig.js";
 
 export default class FilmeService extends Service {
   constructor() {
@@ -59,9 +60,6 @@ export default class FilmeService extends Service {
               return { [Op.eq]: queryObject.ano }
             return { [Op.lte]: new Date().getFullYear() } // retorna todos <= current year
           })(),
-          // generos: {
-          //   [Op.substring]: queryObject.genero
-          // }
         },
 
         attributes: [
@@ -80,7 +78,11 @@ export default class FilmeService extends Service {
             model: db.Genero,
             as: "generos",
             attributes: ["nome"],
-            through: { attributes: [] }, // atributos da tabela intermediaria
+            through: { attributes: [] },// atributos da tabela intermediaria
+            // aplicando filtro pelo query
+            where: {
+              nome: { [Op.substring]: queryObject.genero }
+            },
           },
           {
             model: db.Diretor,
