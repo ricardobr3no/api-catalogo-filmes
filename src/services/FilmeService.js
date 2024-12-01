@@ -18,6 +18,34 @@ export default class FilmeService extends Service {
     await filme.addGeneros(generoId);
   }
 
+  async pegaOneFilmePorId(id) {
+
+    return db.Filme.findByPk(id, {
+      attributes: [
+        "id",
+        "titulo",
+        "ano",
+        "sinopse",
+        "classificacao",
+        `createdAt`, `updatedAt`
+        // "genero",
+        // "duracao",
+      ],
+      include: [ // incluir informaçoes das tabelas relacionadas
+        {
+          model: db.Genero,
+          as: "generos",
+          attributes: ["nome"],
+          through: { attributes: [] }, // atributos da tabela intermediaria
+        },
+        {
+          model: db.Diretor,
+          attributes: ["nome"],
+        },
+      ],
+    });
+  }
+
   async pegaTodosOsFilmes(queryObject) {
     if (Object.keys(queryObject).length === 0) { // verificar se objeto é vazio
       return db.Filme.findAll({
@@ -81,7 +109,11 @@ export default class FilmeService extends Service {
             through: { attributes: [] },// atributos da tabela intermediaria
             // aplicando filtro pelo query
             where: {
-              nome: { [Op.substring]: queryObject.genero }
+              nome: (function() {
+                if (queryObject.genero)
+                  return { [Op.substring]: queryObject.genero };
+                return { [Op.substring]: "" };
+              })()
             },
           },
           {

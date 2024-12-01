@@ -3,6 +3,30 @@ import FilmeService from "../services/FilmeService.js";
 
 const filmeService = new FilmeService();
 
+/**
+  * formata a saida de uma requisicao
+  * @param {object} objResposta  objeto resposta padrao da requisao 
+  * @return {object} objeto de saida formatado
+*/
+function formatedFilmeOutput(objResposta) {
+  let saida = objResposta.dataValues;
+  // colocando nome do diretor como saida do atributo diretor 
+  const diretor = saida["diretor"];
+  const nomeDiretor = diretor.dataValues["nome"];
+  saida["diretor"] = nomeDiretor;
+
+  // extrair nome de cada genero e colocar no array
+  let generosObjArray = saida["generos"];
+  for (let i = 0; i < generosObjArray.length; i++) {
+    const nomeGenero = generosObjArray[i].dataValues["nome"];
+    generosObjArray[i] = nomeGenero;
+  }
+  saida["generos"] = generosObjArray;
+
+  return saida;
+}
+
+
 export default class FilmeController extends Controller {
   constructor() {
     super(filmeService);
@@ -17,30 +41,21 @@ export default class FilmeController extends Controller {
     }
   }
 
-  async pegaFilmes(req, res) {
+  async pegaTodosOsFilmes(req, res) {
     try {
       const filmesRetornados = await filmeService.pegaTodosOsFilmes(req.query);
-      let saida = filmesRetornados.length > 0 ? filmesRetornados[0].dataValues : null;
+      let apiOutput = [];
 
-      if (saida) {
-        // colocando nome do diretor como saida do atributo diretor 
-        const diretor = saida["diretor"];
-        const nomeDiretor = diretor.dataValues["nome"];
-        saida["diretor"] = nomeDiretor;
-
-        // extrair nome de cada genero e colocar no array
-        let generosObjArray = saida["generos"];
-        for (let i = 0; i < generosObjArray.length; i++) {
-          const nomeGenero = generosObjArray[i].dataValues["nome"];
-          generosObjArray[i] = nomeGenero;
-        }
-        saida["generos"] = generosObjArray;
-        console.log(saida);
-        // saida
-        await res.status(200).json(saida);
+      if (filmesRetornados.length > 0) {
+        // formating api output
+        filmesRetornados.forEach(filme => {
+          apiOutput.push(formatedFilmeOutput(filme));
+        });
+        console.log(apiOutput);
+        return res.status(200).json(apiOutput);
 
       } else {
-        await res.status(404).json(saida);
+        return res.status(404).json(apiOutput);
       }
 
     } catch (error) {
@@ -48,4 +63,20 @@ export default class FilmeController extends Controller {
     }
   }
 
+  async pegaOneFilmePorId(req, res) {
+    try {
+      const { id } = req.params;
+      const filmeRetornado = await filmeService.pegaOneFilmePorId(id);
+
+      if (filmeRetornado)
+        return res.status(200).json(formatedFilmeOutput(filmeRetornado));
+
+      else
+        return res.status(404).json(filmeRetornado);
+
+
+    } catch (error) {
+      console.error(`nao foi possivel retornar FILME para esse ID: \t${error}`);
+    }
+  }
 }
