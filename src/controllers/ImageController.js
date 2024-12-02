@@ -28,14 +28,10 @@ export default class ImageController extends Controller {
         }
 
       } catch (error) {
-        // if (error instanceof TypeError) console.error("NOT find file image");
-        // else console.error(`Erro desconhecido a tentar pegar imagem: ${error}`);
+        if (error instanceof TypeError) console.error("NOT find file image");
+        else console.error(`Erro desconhecido a tentar pegar imagem: ${error}`);
         return res.status(404).sendFile(dirPath + "/noImage.jpg");
       }
     });
-  }
-
-  async adicionaCapa(req, res) {
-    res.status(201).send({ message: `tudo enviado!` });
   }
 }
