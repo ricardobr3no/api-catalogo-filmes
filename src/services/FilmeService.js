@@ -1,6 +1,6 @@
 import Service from "./Service.js";
 import db from "../models/index.js";
-import { Op } from "sequelize";
+import { Op, QueryTypes } from "sequelize";
 import sequelize from "../config/dbConfig.js";
 
 export default class FilmeService extends Service {
@@ -28,9 +28,8 @@ export default class FilmeService extends Service {
         "ano",
         "sinopse",
         "classificacao",
-        // `createdAt`, `updatedAt`
-        // "genero",
-        // "duracao",
+        `createdAt`,
+        `updatedAt`
       ],
       include: [ // incluir informaçoes das tabelas relacionadas
         {
@@ -48,6 +47,7 @@ export default class FilmeService extends Service {
   }
 
   async pegaTodosOsFilmes(queryObject) {
+
     if (Object.keys(queryObject).length === 0) { // verificar se objeto é vazio
       return db.Filme.findAll({
         attributes: [
@@ -56,10 +56,8 @@ export default class FilmeService extends Service {
           "ano",
           "sinopse",
           "classificacao",
-          // `createdAt`,
-          // `updatedAt`
-          // "genero",
-          // "duracao",
+          `createdAt`,
+          `updatedAt`
         ],
         include: [ // incluir informaçoes das tabelas relacionadas
           {
@@ -77,6 +75,15 @@ export default class FilmeService extends Service {
 
     } else {
 
+      // const sqlQuery = `
+      //                     SELECT * FROM filmes 
+      //                     INNER JOIN genero_filme on filmes.id=genero_filme.filmeId
+      //                     INNER JOIN diretor on filmes.diretorId=diretor.id;`
+      //
+      // return sequelize.query(sqlQuery, { type: QueryTypes.SELECT });
+
+
+      // /*
       return db.Filme.findAll({
         where: {
           titulo: (function() {
@@ -98,9 +105,8 @@ export default class FilmeService extends Service {
           "ano",
           "sinopse",
           "classificacao",
-          // `createdAt`, `updatedAt`,
-          // "genero",
-          // "duracao",
+          `createdAt`,
+          `updatedAt`,
         ],
         include: [ // incluir informaçoes das tabelas relacionadas
 
@@ -124,6 +130,7 @@ export default class FilmeService extends Service {
           },
         ],
       });
+      // */
     }
   }
 }

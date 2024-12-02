@@ -5,13 +5,10 @@ import { upload } from "../config/multerConfig.js";
 const imageController = new ImageController();
 const routes = Router();
 
-routes.get("/image/:imageId", (req, res) =>
+routes.get("/image/:id", (req, res) =>
   imageController.pegaImagePorId(req, res),
 );
 
-routes.post("/image/:imageName", upload.single("capa"),
-  (req, res) =>
-    imageController.adicionaCapa(req, res),
-);
+routes.post("/image/:id", upload.single("capa"));
 
 export default routes;

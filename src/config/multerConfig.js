@@ -11,7 +11,6 @@ const storage = multer.diskStorage({
     const { imageName } = req.params;
     const newFileName = imageName + "_" + Date.now() + ".jpg";
     cb(null, newFileName);
-    console.log("params: ", req.params)
   }
 });
 

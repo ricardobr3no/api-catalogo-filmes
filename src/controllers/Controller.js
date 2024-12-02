@@ -35,7 +35,7 @@ export default class Controller {
   async atualizaPorId(req, res) {
     try {
       await this.service.atualizaRegistroPorId(req.params.id, req.body);
-      res.status(200).json({ message: "item atualizado" });
+      res.status(201).json({ message: "item atualizado" });
     } catch (error) {
       console.log(`nao foi possivel atualizar objeto: ${error}`);
     }

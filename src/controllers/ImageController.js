@@ -11,17 +11,25 @@ export default class ImageController extends Controller {
   }
 
   async pegaImagePorId(req, res) {
-    const titulo = req.params.imageId;
+    const filmeId = req.params.id;
 
     // ler diretorio e exibir imagem encontrada, exibir noImage caso contrario
     fs.readdir("./src/thumbnails/", async (err, arquivos) => {
       if (err) throw err;
-      const arquivoEncontrado = arquivos.filter(arq => arq.includes(titulo))[0]
       const dirPath = path.resolve("./src/thumbnails/");
 
-      if (arquivoEncontrado && arquivoEncontrado.split("_")[0] === titulo) {
-        return res.status(200).sendFile(dirPath + "/" + arquivoEncontrado);
-      } else {
+      try {
+        const arquivoEncontrado = arquivos.filter(arq => arq.split("_")[0] === filmeId)[0];
+        console.log("requesting file: ", arquivoEncontrado);
+        if (arquivoEncontrado) {
+          return res.status(200).sendFile(dirPath + "/" + arquivoEncontrado);
+        } else {
+          return res.status(404).sendFile(dirPath + "/noImage.jpg");
+        }
+
+      } catch (error) {
+        // if (error instanceof TypeError) console.error("NOT find file image");
+        // else console.error(`Erro desconhecido a tentar pegar imagem: ${error}`);
         return res.status(404).sendFile(dirPath + "/noImage.jpg");
       }
     });
