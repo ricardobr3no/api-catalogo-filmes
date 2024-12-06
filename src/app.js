@@ -2,6 +2,7 @@ import sequelize from "./config/dbConfig.js";
 import express from "express";
 import routes from "./routes/index.js";
 import cors from "cors";
+import path from "path";
 
 await sequelize.sync(/* { alter: true } */);
 
@@ -18,5 +19,10 @@ app.set('view engine', 'ejs');
 app.use(express.json(), cors());
 
 routes(app);
+
+app.get("/api/doc", (req, res) => {
+  const docPath = path.resolve("./doc");
+  return res.sendFile(docPath + "/index.html");
+})
 
 export default app;

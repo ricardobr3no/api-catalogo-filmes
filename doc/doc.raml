@@ -1,0 +1,227 @@
+#%RAML 1.0
+---
+title: catalogo de filmes API
+baseUri: "baseUri: http://localhost:5000/api"
+version: v1
+
+/filmes:
+  get:
+    description: "Retorna uma lista de filmes"
+    queryParameters:
+      titulo:
+        displayName: Titulo
+        type: string
+        description: titulo de algum filme
+        example: avatar
+        required: false
+      genero:
+        displayName: Genero
+        type: string
+        description: um genero do filme
+        example: horror
+        required: false
+      ano:
+        displayName: Ano
+        type: number
+        description: ano de lançamento do filme
+        example: 1997
+        required: false
+
+    responses:
+      200:
+        body: 
+          application/json:
+            example: |
+              [
+                {
+                  "id": 1,
+                  "titulo": "avatar",
+                  "generos": ["acao", "aventura"],
+                  "diretor": "james cameron",
+                  "ano": 2009,
+                  "classificao": "14"
+                }, 
+                {
+                  "id": 2,
+                  "titulo": "velozes e furiosos 4",
+                  "generos": ["acao", "aventura"],
+                  "diretor": "james gunn",
+                  "ano": 2013,
+                  "classificao": "14"
+                }
+            ]
+      404:
+        body:
+          application/json:
+            example: | 
+              []
+  post:
+    description: "Entre com as informaçoes para adicionar um novo filme"
+    body:
+      application/json:
+        properties: 
+          titulo: 
+            type: "string"
+            required: true
+            unique: true
+          ano:
+            type: "int"
+            required: true
+          sinopse:
+            type: "string"
+            required: false
+          classificao: 
+            type: "int"
+            required": true
+          generoId: 
+            type: "int"
+            required: true
+          diretorId: 
+            type: "int"
+            required: true
+
+        example: |  
+          {
+            "titulo": "avatar",
+            "generoId": [1, 2],
+            "diretorId": 1,
+            "ano": 2009,
+            "classificao": "14"
+            "sinopse": "sinopes do filme..."
+          }
+
+    responses: 
+      201:
+        body:
+          application/json:
+            example: |
+              {"message": "filme adicionado com sucesso!" }
+
+  /{id}:
+    get:
+      description: "Retorna filme com base no id"
+      responses:
+        200:
+          body: 
+            application/json:
+              example: |
+                {
+                  "id": 1,
+                  "titulo": "avatar",
+                  "generos": ["acao", "aventura"],
+                  "diretor": "james cameron",
+                  "ano": 2009,
+                  "classificao": "14"
+                }
+        404:
+          body:
+            application/json:
+              example: | 
+                []
+    put:
+      description: "atualiza filme por id"
+    delete:
+      description: "deleta filme por id"
+
+/genero:
+  get:
+    description: "Retorna lista de generos"
+    responses:
+      200:
+        body: 
+          application/json:
+            example: |
+              [
+                {
+                  "id": 1,
+                  "nome": "acao"
+                },
+                {
+                  "id": 2,
+                  "nome": "aventura"
+                }
+              ]
+      404:
+        body:
+          application/json:
+            example: |
+              []
+  post:
+    description: "Adicionar genero"
+    body:
+      application/json:
+        properties: 
+          nome: 
+            type: "string"
+            required: true
+            unique: true
+
+        example: |  
+          {
+            "id": 1,
+            "nome": "acao"
+          }
+
+    responses: 
+      201:
+        body:
+          application/json:
+            example: |
+              {"message": "genero adicionado com sucesso!" }
+
+
+  /{id}:
+    get:
+      description: "retorna genero por id"
+    put:
+      description: "atualiza genero por id"
+    delete:
+      description: "deleta genero por id"
+/diretor:
+  get:
+    description: "Retorna lista de diretores"
+    responses:
+      200:
+        body: 
+          application/json:
+            example: |
+              [
+                {
+                  "id": 1,
+                  "nome": "james cameron"
+                },
+                {
+                  "id": 2,
+                  "nome": "quentin tarantino"
+                }
+              ]
+      404:
+        body:
+          application/json:
+            example: |
+              []
+  /{id}:
+    get:
+      description: "Retorna diretor com id especifico"
+      responses:
+        200:
+          body: 
+            application/json:
+              example: |
+                  {
+                    "id": 2,
+                    "nome": "quentin tarantino"
+                  }
+        404:
+          type: null
+    put:
+      description: "Atualiza diretor com id especifico"
+    delete:
+      description: "Deleta diretor com id especifico"
+      responses:
+        200:
+          body:
+            application/json:
+              example: |
+                {"message": "diretor deletado com sucesso!"}
+}
