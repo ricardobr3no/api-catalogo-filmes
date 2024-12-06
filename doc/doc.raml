@@ -5,6 +5,7 @@ baseUri: "baseUri: http://localhost:5000/api"
 version: v1
 
 /filmes:
+  description: "Rota de filmes"
   get:
     description: "Retorna uma lista de filmes"
     queryParameters:
@@ -124,6 +125,7 @@ version: v1
       description: "deleta filme por id"
 
 /genero:
+  description: "Rota de generos"
   get:
     description: "Retorna lista de generos"
     responses:
@@ -177,7 +179,10 @@ version: v1
       description: "atualiza genero por id"
     delete:
       description: "deleta genero por id"
+
+
 /diretor:
+  description: "Rota de diretores"
   get:
     description: "Retorna lista de diretores"
     responses:
@@ -200,6 +205,30 @@ version: v1
           application/json:
             example: |
               []
+  post:
+    description: "Adicionar novo diretor de filmes"
+    body:
+      application/json:
+        properties: 
+          nome: 
+            type: "string"
+            required: true
+            unique: true
+
+        example: |  
+          {
+            "id": 1,
+            "nome": "james cameron"
+          }
+
+    responses: 
+      201:
+        body:
+          application/json:
+            example: |
+              {"message": "diretor adicionado com sucesso!" }
+
+
   /{id}:
     get:
       description: "Retorna diretor com id especifico"
@@ -224,4 +253,23 @@ version: v1
             application/json:
               example: |
                 {"message": "diretor deletado com sucesso!"}
+/image:
+  description: "Rota de imagens"
+  /{id}:
+    get:
+      description: "retorna imagem do filme passando um id"
+      responses:
+        200:
+          body:
+            binary/octet-stream:
+              example: !include image.jpg
+
+    post:
+      description: "adiciona imagem do filme passando um id"
+      responses:
+        201:
+          body:
+            application/json:
+              example: |
+                {"message": "imagem adcionada!"}
 }
