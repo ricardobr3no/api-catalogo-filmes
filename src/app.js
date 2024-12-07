@@ -15,14 +15,13 @@ try {
 }
 
 const app = express();
-app.set('view engine', 'ejs');
 app.use(express.json(), cors());
 
 routes(app);
 
-app.get("/api/doc", (req, res) => {
+app.get("/doc", (req, res) => {
   const docPath = path.resolve("./doc");
   return res.sendFile(docPath + "/index.html");
-})
+});
 
 export default app;
