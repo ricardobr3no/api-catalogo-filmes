@@ -1,7 +1,6 @@
 import Service from "./Service.js";
 import db from "../models/index.js";
-import { literal, Op, QueryTypes } from "sequelize";
-import sequelize from "../config/dbConfig.js";
+import { Op } from "sequelize";
 
 export default class FilmeService extends Service {
   constructor() {
@@ -48,93 +47,66 @@ export default class FilmeService extends Service {
 
   async pegaTodosOsFilmes(queryObject) {
 
-    if (Object.keys(queryObject).length === 0) { // verificar se objeto é vazio
-      return db.Filme.findAll({
-        attributes: [
-          "id",
-          "titulo",
-          "ano",
-          "sinopse",
-          "classificacao",
-          `createdAt`,
-          `updatedAt`
-        ],
-        include: [ // incluir informaçoes das tabelas relacionadas
-          {
-            model: db.Genero,
-            as: "generos",
-            attributes: ["nome"],
-            through: { attributes: [] }, // atributos da tabela intermediaria
-          },
-          {
-            model: db.Diretor,
-            attributes: ["nome"],
-          },
-        ],
-      });
+    const filmes = await db.Filme.findAll({
+      where: {
+        titulo: (function() {
+          if (queryObject.titulo)
+            return { [Op.substring]: queryObject.titulo }
+          return { [Op.substring]: "" }
+        })(),
 
-    } else {
-      const filmes = await db.Filme.findAll({
-        where: {
-          titulo: (function() {
-            if (queryObject.titulo)
-              return { [Op.substring]: queryObject.titulo }
-            return { [Op.substring]: "" }
-          })(),
+        ano: (function() {
+          if (queryObject.ano)
+            return { [Op.eq]: queryObject.ano }
+          return { [Op.lte]: new Date().getFullYear() } // retorna todos <= current year
+        })(),
+      },
 
-          ano: (function() {
-            if (queryObject.ano)
-              return { [Op.eq]: queryObject.ano }
-            return { [Op.lte]: new Date().getFullYear() } // retorna todos <= current year
-          })(),
+      attributes: [
+        "id",
+        "titulo",
+        "ano",
+        "sinopse",
+        "classificacao",
+        `createdAt`,
+        `updatedAt`,
+      ],
+
+      include: [ // incluir informaçoes das tabelas relacionadas
+        {
+          model: db.Genero,
+          as: "generos",
+          attributes: ["nome"],
+          through: { attributes: [] },// atributos da tabela intermediaria
         },
+        {
+          model: db.Diretor,
+          attributes: ["nome"],
+        },
+      ],
+    });
 
-        attributes: [
-          "id",
-          "titulo",
-          "ano",
-          "sinopse",
-          "classificacao",
-          `createdAt`,
-          `updatedAt`,
-        ],
-        include: [ // incluir informaçoes das tabelas relacionadas
+    // filtro de query genero
+    if (queryObject.genero) {
+      const arrayGenerosQuery = queryObject.genero.split("+");
+      let filmesByGener = []
 
-          {
-            model: db.Genero,
-            as: "generos",
-            attributes: ["nome"],
-            through: { attributes: [] },// atributos da tabela intermediaria
-          },
-          {
-            model: db.Diretor,
-            attributes: ["nome"],
-          },
-        ],
-      });
+      filmes.forEach(filme => {
+        const generosFilme = filme.dataValues.generos; // array de obj com dataValues
+        const arrayNomesGeneros = generosFilme.map(genero => genero.dataValues.nome);
 
-      // filtro de query
-      if (queryObject.genero) {
-        const arrayGenerosQuery = queryObject.genero.split("+");
-        let filmesByGener = []
-
-        filmes.forEach(filme => {
-          const generosFilme = filme.dataValues.generos; // array de obj com dataValues
-          const arrayNomesGeneros = generosFilme.map(genero => genero.dataValues.nome);
-
-          for (const generoQuery of arrayGenerosQuery) {
-            if (arrayNomesGeneros.includes(generoQuery)) {
-              filmesByGener.push(filme);
-              break;
-            }
+        for (const generoQuery of arrayGenerosQuery) {
+          if (arrayNomesGeneros.includes(generoQuery)) {
+            filmesByGener.push(filme);
+            break;
           }
+        }
 
-        });
-        console.log(filmesByGener);
-        return filmesByGener;
-      }
-
-      return filmes;
+      });
+      // console.log(filmesByGener);
+      return filmesByGener;
     }
+
+    return filmes;
   }
 }
