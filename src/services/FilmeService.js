@@ -1,6 +1,6 @@
 import Service from "./Service.js";
 import db from "../models/index.js";
-import { Op, QueryTypes } from "sequelize";
+import { literal, Op, QueryTypes } from "sequelize";
 import sequelize from "../config/dbConfig.js";
 
 export default class FilmeService extends Service {
@@ -74,17 +74,7 @@ export default class FilmeService extends Service {
       });
 
     } else {
-
-      // const sqlQuery = `
-      //                     SELECT * FROM filmes 
-      //                     INNER JOIN genero_filme on filmes.id=genero_filme.filmeId
-      //                     INNER JOIN diretor on filmes.diretorId=diretor.id;`
-      //
-      // return sequelize.query(sqlQuery, { type: QueryTypes.SELECT });
-
-
-      // /*
-      return db.Filme.findAll({
+      const filmes = await db.Filme.findAll({
         where: {
           titulo: (function() {
             if (queryObject.titulo)
@@ -115,14 +105,6 @@ export default class FilmeService extends Service {
             as: "generos",
             attributes: ["nome"],
             through: { attributes: [] },// atributos da tabela intermediaria
-            // aplicando filtro pelo query
-            where: {
-              nome: (function() {
-                if (queryObject.genero)
-                  return { [Op.substring]: queryObject.genero };
-                return { [Op.substring]: "" };
-              })()
-            },
           },
           {
             model: db.Diretor,
@@ -130,7 +112,29 @@ export default class FilmeService extends Service {
           },
         ],
       });
-      // */
+
+      // filtro de query
+      if (queryObject.genero) {
+        const arrayGenerosQuery = queryObject.genero.split("+");
+        let filmesByGener = []
+
+        filmes.forEach(filme => {
+          const generosFilme = filme.dataValues.generos; // array de obj com dataValues
+          const arrayNomesGeneros = generosFilme.map(genero => genero.dataValues.nome);
+
+          for (const generoQuery of arrayGenerosQuery) {
+            if (arrayNomesGeneros.includes(generoQuery)) {
+              filmesByGener.push(filme);
+              break;
+            }
+          }
+
+        });
+        console.log(filmesByGener);
+        return filmesByGener;
+      }
+
+      return filmes;
     }
   }
 }

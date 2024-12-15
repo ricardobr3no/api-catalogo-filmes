@@ -51,7 +51,7 @@ export default class FilmeController extends Controller {
         filmesRetornados.forEach(filme => {
           apiOutput.push(formatedFilmeOutput(filme));
         });
-        console.log(apiOutput);
+        // console.log(apiOutput);
         return res.status(200).json(apiOutput);
 
       } else {
